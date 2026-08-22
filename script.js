@@ -60,7 +60,7 @@ function renderWheel() {
       const top = 50 - Math.cos(radians) * 35;
       const isDark = index % 2 === 0 ? "is-dark" : "";
       const textCorrection = angle > 90 && angle < 270 ? 180 : 0;
-      const radialAngle = angle;
+      const radialAngle = angle - 90;
 
       return `
         <div class="wheel-label ${isDark}" style="--label-angle: ${radialAngle}deg; --text-correction: ${textCorrection}deg; left: ${left}%; top: ${top}%;" aria-hidden="true">
