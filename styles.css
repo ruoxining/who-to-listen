@@ -79,20 +79,9 @@ h1 {
   border: 1px solid var(--black);
   border-radius: 50%;
   background: var(--white);
-  box-shadow: 0 0 0 6px var(--white), 0 0 0 7px var(--black);
   transform: rotate(var(--rotation));
   transition: transform 5.4s cubic-bezier(0.12, 0.74, 0.08, 1);
   will-change: transform;
-}
-
-.wheel::after {
-  position: absolute;
-  inset: 4%;
-  z-index: 1;
-  border: 1px solid var(--black);
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
 }
 
 .wheel-labels {
@@ -103,7 +92,7 @@ h1 {
 .wheel-label {
   position: absolute;
   z-index: 2;
-  width: 116px;
+  width: 132px;
   color: var(--black);
   text-align: center;
   transform: translate(-50%, -50%);
@@ -116,47 +105,11 @@ h1 {
 
 .wheel-label-name {
   display: block;
-  font-size: clamp(15px, 2.1vw, 23px);
+  font-size: clamp(13px, 1.8vw, 19px);
   font-weight: 600;
   letter-spacing: -0.08em;
   line-height: 1.1;
   white-space: nowrap;
-  transform: rotate(calc(var(--rotation) * -1));
-}
-
-.wheel-center {
-  position: absolute;
-  z-index: 3;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  width: 22%;
-  height: 22%;
-  min-width: 78px;
-  min-height: 78px;
-  place-items: center;
-  border: 1px solid var(--black);
-  border-radius: 50%;
-  background: var(--white);
-  transform: translate(-50%, -50%);
-}
-
-.wheel-center-dot {
-  position: absolute;
-  top: 13%;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--black);
-}
-
-.wheel-center-text {
-  margin-top: 5px;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  line-height: 1.45;
-  text-align: center;
   transform: rotate(calc(var(--rotation) * -1));
 }
 
@@ -289,16 +242,11 @@ h1 {
 
 @media (max-width: 520px) {
   .wheel-label {
-    width: 88px;
+    width: 112px;
   }
 
   .wheel-label-name {
-    font-size: clamp(13px, 4vw, 18px);
-  }
-
-  .wheel-center {
-    min-width: 68px;
-    min-height: 68px;
+    font-size: clamp(12px, 3.7vw, 17px);
   }
 }
 

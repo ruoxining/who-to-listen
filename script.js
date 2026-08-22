@@ -6,7 +6,11 @@ const composers = [
   { name: "德彪西" },
   { name: "马勒" },
   { name: "拉威尔" },
+  { name: "斯特拉文斯基" },
+  { name: "普罗科菲耶夫" },
+  { name: "梅西安" },
   { name: "格拉斯" },
+  { name: "武满彻" },
 ];
 
 const wheel = document.querySelector("#wheel");
@@ -44,8 +48,8 @@ function renderWheel() {
     .map((composer, index) => {
       const angle = index * segmentAngle;
       const radians = (angle * Math.PI) / 180;
-      const left = 50 + Math.sin(radians) * 37;
-      const top = 50 - Math.cos(radians) * 37;
+      const left = 50 + Math.sin(radians) * 38;
+      const top = 50 - Math.cos(radians) * 38;
       const isDark = index % 2 === 0 ? "is-dark" : "";
 
       return `
