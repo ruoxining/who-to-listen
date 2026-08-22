@@ -1,16 +1,24 @@
 const composers = [
+  { name: "希尔德加德" },
+  { name: "马肖" },
+  { name: "若斯坎" },
+  { name: "帕莱斯特里纳" },
+  { name: "蒙特威尔第" },
+  { name: "吕利" },
+  { name: "科雷利" },
+  { name: "维瓦尔第" },
   { name: "巴赫" },
+  { name: "亨德尔" },
+  { name: "海顿" },
   { name: "莫扎特" },
   { name: "贝多芬" },
+  { name: "舒伯特" },
+  { name: "柏辽兹" },
   { name: "肖邦" },
-  { name: "德彪西" },
-  { name: "马勒" },
-  { name: "拉威尔" },
-  { name: "斯特拉文斯基" },
-  { name: "普罗科菲耶夫" },
-  { name: "梅西安" },
-  { name: "格拉斯" },
-  { name: "武满彻" },
+  { name: "李斯特" },
+  { name: "瓦格纳" },
+  { name: "勃拉姆斯" },
+  { name: "勋伯格" },
 ];
 
 const wheel = document.querySelector("#wheel");
@@ -48,12 +56,14 @@ function renderWheel() {
     .map((composer, index) => {
       const angle = index * segmentAngle;
       const radians = (angle * Math.PI) / 180;
-      const left = 50 + Math.sin(radians) * 38;
-      const top = 50 - Math.cos(radians) * 38;
+      const left = 50 + Math.sin(radians) * 35;
+      const top = 50 - Math.cos(radians) * 35;
       const isDark = index % 2 === 0 ? "is-dark" : "";
+      const textCorrection = angle > 90 && angle < 270 ? 180 : 0;
+      const radialAngle = angle - 90;
 
       return `
-        <div class="wheel-label ${isDark}" style="left: ${left}%; top: ${top}%;" aria-hidden="true">
+        <div class="wheel-label ${isDark}" style="--label-angle: ${radialAngle}deg; --text-correction: ${textCorrection}deg; left: ${left}%; top: ${top}%;" aria-hidden="true">
           <span class="wheel-label-name">${composer.name}</span>
         </div>
       `;
