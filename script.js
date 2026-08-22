@@ -1,154 +1,144 @@
 const composers = [
-  { name: "希尔德加德" },
-  { name: "马肖" },
-  { name: "若斯坎" },
-  { name: "帕莱斯特里纳" },
-  { name: "蒙特威尔第" },
-  { name: "吕利" },
-  { name: "科雷利" },
-  { name: "维瓦尔第" },
-  { name: "巴赫" },
-  { name: "亨德尔" },
-  { name: "海顿" },
-  { name: "莫扎特" },
-  { name: "贝多芬" },
-  { name: "舒伯特" },
-  { name: "柏辽兹" },
-  { name: "肖邦" },
-  { name: "李斯特" },
-  { name: "瓦格纳" },
-  { name: "勃拉姆斯" },
-  { name: "勋伯格" },
+  "巴赫",
+  "贝多芬",
+  "莫扎特",
+  "勃拉姆斯",
+  "柴可夫斯基",
+  "亨德尔",
+  "瓦格纳",
+  "肖邦",
+  "格里格",
+  "李斯特",
+  "舒伯特",
+  "马勒",
+  "布鲁克纳",
+  "拉威尔",
+  "斯特拉文斯基",
+  "拉赫玛尼诺夫",
+  "海顿",
+  "门德尔松",
+  "肖斯塔科维奇",
+  "勋伯格",
+  "德沃夏克",
+  "德彪西",
+  "西贝柳斯",
+  "巴托克",
+  "普罗科菲耶夫",
+  "克拉拉·舒曼",
+  "霍尔斯特",
+  "巴伯",
+  "柏辽兹",
+  "圣桑",
+  "拉罗",
+  "埃尔加",
+  "维瓦尔第",
+  "小约翰·施特劳斯",
+  "比才",
+  "威尔第",
+  "理查·施特劳斯",
+  "斯美塔那",
+  "舒曼",
+  "欣德米特",
+  "斯克里亚宾",
+  "萨蒂",
+  "雷斯庇基",
+  "里姆斯基-科萨科夫",
+  "帕格尼尼",
+  "普契尼",
+  "鲍罗丁",
 ];
 
-const wheel = document.querySelector("#wheel");
-const wheelLabels = document.querySelector("#wheelLabels");
+const app = document.querySelector("#app");
+const pickerTrack = document.querySelector("#pickerTrack");
 const statusText = document.querySelector("#statusText");
-const spinButton = document.querySelector("#spinButton");
-const resultActions = document.querySelector("#resultActions");
-const acceptButton = document.querySelector("#acceptButton");
-const rejectButton = document.querySelector("#rejectButton");
+const actionButton = document.querySelector("#actionButton");
 const statusMessage = document.querySelector("#statusMessage");
 
-const segmentAngle = 360 / composers.length;
-const spinDuration = 5400;
-
-let currentRotation = 0;
+let currentIndex = 0;
 let rejectionCount = 0;
-let currentComposer = null;
 let spinTimer = null;
-let spinSequence = 0;
+let spinInterval = null;
 let isSpinning = false;
 
-function renderWheel() {
-  const gradientStops = composers
-    .map((_, index) => {
-      const start = index * segmentAngle;
-      const end = (index + 1) * segmentAngle;
-      const color = index % 2 === 0 ? "#000000" : "#ffffff";
-      return `${color} ${start}deg ${end}deg`;
-    })
-    .join(", ");
+function getRowHeight() {
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--row-height")) || 54;
+}
 
-  wheel.style.background = `conic-gradient(from -${segmentAngle / 2}deg, ${gradientStops})`;
-
-  wheelLabels.innerHTML = composers
-    .map((composer, index) => {
-      const angle = index * segmentAngle;
-      const radians = (angle * Math.PI) / 180;
-      const left = 50 + Math.sin(radians) * 35;
-      const top = 50 - Math.cos(radians) * 35;
-      const isDark = index % 2 === 0 ? "is-dark" : "";
-      const textCorrection = angle > 90 && angle < 270 ? 180 : 0;
-      const radialAngle = angle - 90;
-
-      return `
-        <div class="wheel-label ${isDark}" style="--label-angle: ${radialAngle}deg; --text-correction: ${textCorrection}deg; left: ${left}%; top: ${top}%;" aria-hidden="true">
-          <span class="wheel-label-name">${composer.name}</span>
-        </div>
-      `;
-    })
+function renderPicker() {
+  pickerTrack.innerHTML = composers
+    .map((composer, index) => `<div class="picker-item" data-index="${index}">${composer}</div>`)
     .join("");
+  updatePickerPosition();
 }
 
-function announce(message) {
-  statusMessage.textContent = message;
+function updatePickerPosition() {
+  const items = pickerTrack.querySelectorAll(".picker-item");
+  items.forEach((item, index) => item.classList.toggle("is-selected", index === currentIndex));
+  pickerTrack.style.transform = `translateY(-${currentIndex * getRowHeight()}px)`;
 }
 
-function setHeading(message) {
-  statusText.textContent = message;
-  announce(message);
+function setHeading(text) {
+  statusText.textContent = text;
+  statusMessage.textContent = text;
 }
 
-function getSelectedIndex(rotation) {
-  const normalizedRotation = ((rotation % 360) + 360) % 360;
-  const pointerAngle = (360 - normalizedRotation) % 360;
-  return Math.floor((pointerAngle + segmentAngle / 2) / segmentAngle) % composers.length;
+function chooseNext() {
+  currentIndex = Math.floor(Math.random() * composers.length);
+  updatePickerPosition();
 }
 
-function spin(force = false) {
-  if (!force && (spinButton.disabled || isSpinning)) {
+function finishSpin() {
+  if (!isSpinning) {
     return;
   }
 
   clearTimeout(spinTimer);
-  const sequence = ++spinSequence;
-  const turns = 5 + Math.floor(Math.random() * 4);
-  const angle = Math.floor(Math.random() * 360);
-  const targetRotation = currentRotation + turns * 360 + angle;
-
-  currentRotation = targetRotation;
-  currentComposer = null;
-  isSpinning = true;
-  resultActions.hidden = true;
-  spinButton.disabled = true;
-  setHeading("转动中…");
-  wheel.style.setProperty("--rotation", `${targetRotation}deg`);
-
-  spinTimer = window.setTimeout(() => {
-    if (sequence !== spinSequence) {
-      return;
-    }
-
-    currentComposer = composers[getSelectedIndex(targetRotation)];
-    isSpinning = false;
-    spinButton.disabled = false;
-    spinButton.hidden = true;
-    resultActions.hidden = false;
-    setHeading(`今天听${currentComposer.name}！`);
-  }, spinDuration + 100);
+  clearInterval(spinInterval);
+  isSpinning = false;
+  chooseNext();
+  app.dataset.state = "result";
+  setHeading("今天听这个！");
+  actionButton.textContent = "不想听，换一个";
 }
 
-function acceptCurrentComposer() {
-  if (!currentComposer || isSpinning) {
+function startSpin() {
+  if (isSpinning) {
+    finishSpin();
     return;
   }
 
-  resultActions.hidden = true;
-  setHeading(`今天听${currentComposer.name}！`);
+  isSpinning = true;
+  app.dataset.state = "running";
+  setHeading("今天听谁，听什么？");
+  actionButton.textContent = "停止";
+  chooseNext();
+  spinInterval = window.setInterval(chooseNext, 110);
+  spinTimer = window.setTimeout(finishSpin, 2600 + Math.random() * 1400);
 }
 
-function rejectCurrentComposer() {
-  if (!currentComposer || isSpinning) {
+function rejectCurrent() {
+  if (isSpinning || app.dataset.state !== "result") {
     return;
   }
 
   rejectionCount += 1;
-  currentComposer = null;
-  resultActions.hidden = true;
-
   if (rejectionCount >= 3) {
-    spinButton.hidden = true;
+    app.dataset.state = "done";
     setHeading("这么挑？今天别听了！");
+    actionButton.hidden = true;
     return;
   }
 
-  window.setTimeout(() => spin(true), 260);
+  startSpin();
 }
 
-spinButton.addEventListener("click", () => spin());
-acceptButton.addEventListener("click", acceptCurrentComposer);
-rejectButton.addEventListener("click", rejectCurrentComposer);
-window.addEventListener("resize", renderWheel);
+actionButton.addEventListener("click", () => {
+  if (app.dataset.state === "result") {
+    rejectCurrent();
+    return;
+  }
 
-renderWheel();
+  startSpin();
+});
+
+renderPicker();

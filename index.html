@@ -3,32 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="作曲家随机聆听转盘。" />
-    <title>Who to Listen</title>
+    <meta name="description" content="作曲家随机聆听抽取。" />
+    <title>今天听谁？</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
-    <main class="app-shell">
-      <h1 id="statusText">今天听谁？</h1>
+    <main class="app-shell" id="app" data-state="idle">
+      <h1 id="statusText">今天听谁，听什么？</h1>
 
-      <section class="wheel-wrap" aria-label="作曲家随机转盘">
-        <div class="wheel-pointer" aria-hidden="true"><span></span></div>
-        <div class="wheel-stage">
-          <div class="wheel" id="wheel" role="img" aria-label="作曲家转盘">
-            <div class="wheel-labels" id="wheelLabels"></div>
-          </div>
-        </div>
+      <section class="picker-window" id="pickerWindow" aria-label="作曲家名单">
+        <div class="picker-track" id="pickerTrack"></div>
       </section>
 
-      <div class="controls">
-        <button class="action-button start-button" id="spinButton" type="button">开始转动</button>
-
-        <div class="decision-area" id="resultActions" hidden>
-          <button class="action-button accept-button" id="acceptButton" type="button">就听这个</button>
-          <button class="action-button reject-button" id="rejectButton" type="button">不想听</button>
-        </div>
-      </div>
+      <button class="action-button" id="actionButton" type="button">开始</button>
 
       <p class="sr-only" id="statusMessage" aria-live="polite"></p>
     </main>
