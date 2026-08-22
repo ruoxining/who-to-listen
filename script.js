@@ -109,7 +109,7 @@ function startSpin() {
 
   isSpinning = true;
   app.dataset.state = "running";
-  setHeading("今天听谁，听什么？");
+  setHeading("今天听谁？");
   actionButton.textContent = "停止";
   chooseNext();
   spinInterval = window.setInterval(chooseNext, 110);
