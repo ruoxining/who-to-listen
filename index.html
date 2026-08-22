@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="作曲家随机聆听转盘。" />
+    <title>Who to Listen</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="wheel-wrap" aria-label="作曲家随机转盘">
+        <div class="wheel-pointer" aria-hidden="true"><span></span></div>
+        <div class="wheel-stage">
+          <div class="wheel" id="wheel" role="img" aria-label="作曲家转盘">
+            <div class="wheel-labels" id="wheelLabels"></div>
+            <div class="wheel-center" aria-hidden="true">
+              <span class="wheel-center-dot"></span>
+              <span class="wheel-center-text">LISTEN<br />IN</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button class="primary-button" id="spinButton" type="button">
+          <span id="spinButtonText">转动</span>
+          <span aria-hidden="true">↗</span>
+        </button>
+
+        <div class="decision-area" id="resultActions" hidden>
+          <button class="decision-button decision-button-primary" id="acceptButton" type="button">就听这个</button>
+          <button class="decision-button decision-button-secondary" id="rejectButton" type="button">不想听</button>
+        </div>
+
+        <button class="reset-button" id="resetButton" type="button" hidden>重新开始</button>
+      </div>
+
+      <p class="sr-only" id="statusMessage" aria-live="polite"></p>
+    </main>
+  </body>
+</html>
