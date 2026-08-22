@@ -10,6 +10,8 @@
   </head>
   <body>
     <main class="app-shell">
+      <h1 id="statusText">今天听谁？</h1>
+
       <section class="wheel-wrap" aria-label="作曲家随机转盘">
         <div class="wheel-pointer" aria-hidden="true"><span></span></div>
         <div class="wheel-stage">
@@ -24,17 +26,12 @@
       </section>
 
       <div class="controls">
-        <button class="primary-button" id="spinButton" type="button">
-          <span id="spinButtonText">转动</span>
-          <span aria-hidden="true">↗</span>
-        </button>
+        <button class="action-button start-button" id="spinButton" type="button">开始转动</button>
 
         <div class="decision-area" id="resultActions" hidden>
-          <button class="decision-button decision-button-primary" id="acceptButton" type="button">就听这个</button>
-          <button class="decision-button decision-button-secondary" id="rejectButton" type="button">不想听</button>
+          <button class="action-button accept-button" id="acceptButton" type="button">就听这个</button>
+          <button class="action-button reject-button" id="rejectButton" type="button">不想听</button>
         </div>
-
-        <button class="reset-button" id="resetButton" type="button" hidden>重新开始</button>
       </div>
 
       <p class="sr-only" id="statusMessage" aria-live="polite"></p>

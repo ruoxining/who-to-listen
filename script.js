@@ -1,26 +1,21 @@
 const composers = [
-  { name: "J. S. Bach", cn: "巴赫" },
-  { name: "W. A. Mozart", cn: "莫扎特" },
-  { name: "L. v. Beethoven", cn: "贝多芬" },
-  { name: "F. Chopin", cn: "肖邦" },
-  { name: "C. Debussy", cn: "德彪西" },
-  { name: "G. Mahler", cn: "马勒" },
-  { name: "M. Ravel", cn: "拉威尔" },
-  { name: "I. Stravinsky", cn: "斯特拉文斯基" },
-  { name: "S. Prokofiev", cn: "普罗科菲耶夫" },
-  { name: "O. Messiaen", cn: "梅西安" },
-  { name: "P. Glass", cn: "菲利普·格拉斯" },
-  { name: "T. Takemitsu", cn: "武满彻" },
+  { name: "巴赫" },
+  { name: "莫扎特" },
+  { name: "贝多芬" },
+  { name: "肖邦" },
+  { name: "德彪西" },
+  { name: "马勒" },
+  { name: "拉威尔" },
+  { name: "格拉斯" },
 ];
 
 const wheel = document.querySelector("#wheel");
 const wheelLabels = document.querySelector("#wheelLabels");
+const statusText = document.querySelector("#statusText");
 const spinButton = document.querySelector("#spinButton");
-const spinButtonText = document.querySelector("#spinButtonText");
 const resultActions = document.querySelector("#resultActions");
 const acceptButton = document.querySelector("#acceptButton");
 const rejectButton = document.querySelector("#rejectButton");
-const resetButton = document.querySelector("#resetButton");
 const statusMessage = document.querySelector("#statusMessage");
 
 const segmentAngle = 360 / composers.length;
@@ -49,15 +44,13 @@ function renderWheel() {
     .map((composer, index) => {
       const angle = index * segmentAngle;
       const radians = (angle * Math.PI) / 180;
-      const radius = window.innerWidth <= 520 ? 38 : 39;
-      const left = 50 + Math.sin(radians) * radius;
-      const top = 50 - Math.cos(radians) * radius;
+      const left = 50 + Math.sin(radians) * 37;
+      const top = 50 - Math.cos(radians) * 37;
       const isDark = index % 2 === 0 ? "is-dark" : "";
 
       return `
         <div class="wheel-label ${isDark}" style="left: ${left}%; top: ${top}%;" aria-hidden="true">
           <span class="wheel-label-name">${composer.name}</span>
-          <span class="wheel-label-cn">${composer.cn}</span>
         </div>
       `;
     })
@@ -66,6 +59,11 @@ function renderWheel() {
 
 function announce(message) {
   statusMessage.textContent = message;
+}
+
+function setHeading(message) {
+  statusText.textContent = message;
+  announce(message);
 }
 
 function getSelectedIndex(rotation) {
@@ -89,12 +87,9 @@ function spin(force = false) {
   currentComposer = null;
   isSpinning = true;
   resultActions.hidden = true;
-  resetButton.hidden = true;
-  spinButton.hidden = false;
   spinButton.disabled = true;
-  spinButtonText.textContent = "转动中";
-  announce("转盘正在转动。");
-  wheel.style.transform = `rotate(${targetRotation}deg)`;
+  setHeading("转动中…");
+  wheel.style.setProperty("--rotation", `${targetRotation}deg`);
 
   spinTimer = window.setTimeout(() => {
     if (sequence !== spinSequence) {
@@ -103,10 +98,10 @@ function spin(force = false) {
 
     currentComposer = composers[getSelectedIndex(targetRotation)];
     isSpinning = false;
-    spinButton.hidden = true;
     spinButton.disabled = false;
+    spinButton.hidden = true;
     resultActions.hidden = false;
-    announce(`今天听 ${currentComposer.name}！`);
+    setHeading(`今天听${currentComposer.name}！`);
   }, spinDuration + 100);
 }
 
@@ -116,10 +111,7 @@ function acceptCurrentComposer() {
   }
 
   resultActions.hidden = true;
-  spinButton.hidden = false;
-  spinButton.disabled = false;
-  spinButtonText.textContent = "再转一次";
-  announce(`今天听 ${currentComposer.name}！`);
+  setHeading(`今天听${currentComposer.name}！`);
 }
 
 function rejectCurrentComposer() {
@@ -133,34 +125,16 @@ function rejectCurrentComposer() {
 
   if (rejectionCount >= 3) {
     spinButton.hidden = true;
-    resetButton.hidden = false;
-    announce("这么挑？今天别听了！");
+    setHeading("这么挑？今天别听了！");
     return;
   }
 
   window.setTimeout(() => spin(true), 260);
 }
 
-function resetSession() {
-  clearTimeout(spinTimer);
-  spinSequence += 1;
-  currentRotation = 0;
-  rejectionCount = 0;
-  currentComposer = null;
-  isSpinning = false;
-  wheel.style.transform = "rotate(0deg)";
-  resultActions.hidden = true;
-  resetButton.hidden = true;
-  spinButton.hidden = false;
-  spinButton.disabled = false;
-  spinButtonText.textContent = "转动";
-  announce("");
-}
-
 spinButton.addEventListener("click", () => spin());
 acceptButton.addEventListener("click", acceptCurrentComposer);
 rejectButton.addEventListener("click", rejectCurrentComposer);
-resetButton.addEventListener("click", resetSession);
 window.addEventListener("resize", renderWheel);
 
 renderWheel();

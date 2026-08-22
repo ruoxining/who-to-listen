@@ -1,7 +1,6 @@
 :root {
   --white: #ffffff;
   --black: #000000;
-  --serif: Georgia, "Times New Roman", serif;
   --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -43,13 +42,23 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: clamp(12px, 2.5vh, 26px);
-  padding: 12px 16px;
+  gap: 18px;
+  padding: 16px;
+}
+
+h1 {
+  min-height: 1.2em;
+  margin: 0;
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .wheel-wrap {
   position: relative;
-  width: min(90vw, 560px, calc(100svh - 126px));
+  width: min(90vw, 560px, calc(100svh - 154px));
   aspect-ratio: 1;
   padding: 20px;
 }
@@ -62,6 +71,7 @@ button:focus-visible {
 }
 
 .wheel {
+  --rotation: 0deg;
   position: relative;
   width: 100%;
   height: 100%;
@@ -70,7 +80,7 @@ button:focus-visible {
   border-radius: 50%;
   background: var(--white);
   box-shadow: 0 0 0 6px var(--white), 0 0 0 7px var(--black);
-  transform: rotate(0deg);
+  transform: rotate(var(--rotation));
   transition: transform 5.4s cubic-bezier(0.12, 0.74, 0.08, 1);
   will-change: transform;
 }
@@ -93,8 +103,7 @@ button:focus-visible {
 .wheel-label {
   position: absolute;
   z-index: 2;
-  width: 82px;
-  padding: 4px 2px;
+  width: 116px;
   color: var(--black);
   text-align: center;
   transform: translate(-50%, -50%);
@@ -107,19 +116,12 @@ button:focus-visible {
 
 .wheel-label-name {
   display: block;
-  font-family: var(--serif);
-  font-size: clamp(11px, 1.35vw, 16px);
-  letter-spacing: -0.04em;
-  line-height: 1.05;
+  font-size: clamp(15px, 2.1vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.08em;
+  line-height: 1.1;
   white-space: nowrap;
-}
-
-.wheel-label-cn {
-  display: block;
-  margin-top: 4px;
-  font-size: clamp(7px, 0.8vw, 9px);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  transform: rotate(calc(var(--rotation) * -1));
 }
 
 .wheel-center {
@@ -128,10 +130,10 @@ button:focus-visible {
   top: 50%;
   left: 50%;
   display: grid;
-  width: 21%;
-  height: 21%;
-  min-width: 70px;
-  min-height: 70px;
+  width: 22%;
+  height: 22%;
+  min-width: 78px;
+  min-height: 78px;
   place-items: center;
   border: 1px solid var(--black);
   border-radius: 50%;
@@ -141,7 +143,7 @@ button:focus-visible {
 
 .wheel-center-dot {
   position: absolute;
-  top: 12%;
+  top: 13%;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -155,6 +157,7 @@ button:focus-visible {
   letter-spacing: 0.14em;
   line-height: 1.45;
   text-align: center;
+  transform: rotate(calc(var(--rotation) * -1));
 }
 
 .wheel-pointer {
@@ -199,42 +202,30 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 8px;
 }
 
-.primary-button,
-.decision-button,
-.reset-button {
+.action-button {
+  min-height: 52px;
+  border: 1px solid var(--black);
   border-radius: 0;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.primary-button {
-  display: flex;
+.start-button {
   width: 100%;
-  min-height: 52px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px 0 20px;
-  border: 1px solid var(--black);
   color: var(--white);
   background: var(--black);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
 }
 
-.primary-button:hover:not(:disabled) {
+.start-button:hover {
   color: var(--black);
   background: var(--white);
 }
 
-.primary-button:active:not(:disabled) {
-  transform: translateY(2px);
-}
-
-.primary-button:disabled {
-  cursor: wait;
+.start-button:disabled {
+  display: none;
 }
 
 .decision-area {
@@ -244,44 +235,22 @@ button:focus-visible {
   gap: 8px;
 }
 
-.decision-button {
-  min-height: 48px;
-  border: 1px solid var(--black);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.decision-button-primary {
+.accept-button {
   color: var(--white);
   background: var(--black);
 }
 
-.decision-button-primary:hover {
+.accept-button:hover {
   color: var(--black);
   background: var(--white);
 }
 
-.decision-button-secondary {
+.reject-button {
   color: var(--black);
   background: var(--white);
 }
 
-.decision-button-secondary:hover {
-  color: var(--white);
-  background: var(--black);
-}
-
-.reset-button {
-  min-height: 46px;
-  padding: 0 18px;
-  border: 1px solid var(--black);
-  color: var(--black);
-  background: var(--white);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.reset-button:hover {
+.reject-button:hover {
   color: var(--white);
   background: var(--black);
 }
@@ -309,16 +278,27 @@ button:focus-visible {
   }
 
   .wheel-wrap {
-    width: min(72vw, calc(100svh - 76px));
+    width: min(72vw, calc(100svh - 92px));
     padding: 12px;
   }
 
-  .primary-button {
+  .action-button {
     min-height: 40px;
   }
+}
 
-  .decision-button {
-    min-height: 38px;
+@media (max-width: 520px) {
+  .wheel-label {
+    width: 88px;
+  }
+
+  .wheel-label-name {
+    font-size: clamp(13px, 4vw, 18px);
+  }
+
+  .wheel-center {
+    min-width: 68px;
+    min-height: 68px;
   }
 }
 
